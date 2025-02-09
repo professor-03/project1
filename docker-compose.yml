@@ -1,0 +1,63 @@
+version: '3'
+services:
+  validator1:
+    build: .
+    command: [
+      'geth', '--datadir', '/validator1',
+      '--unlock', '0',
+      '--password', '/validator1/password.txt',
+      '--mine', '--http', '--http.addr', '0.0.0.0',
+      '--networkid', '1515',
+      '--port', '30303',
+      '--http.port', '8545',
+      '--http.api', 'personal,db,eth,net,web3,txpool,miner,clique'
+    ]
+    ports:
+      - "30303:30303"
+      - "8545:8545"
+    volumes:
+      - ./validator1:/validator1
+  node2:
+    build: .
+    command: [ 'geth', '--datadir', '/validator2',
+      '--unlock', '0',
+      '--password', '/validator2/password.txt',
+      '--mine', '--http', '--http.addr', '0.0.0.0',
+      '--networkid', '1515',
+      '--port', '30303',
+      '--http.port', '8545',
+      '--http.api', 'personal,db,eth,net,web3,txpool,miner,clique'
+ ]
+    ports:
+      - "30304:30304"
+      - "8546:8546"
+    volumes:
+      - ./validator2:/validator2
+  validator3:
+    build: .
+    command: [ 'geth', '--datadir', '/validator3',
+      '--unlock', '0',
+      '--password', '/validator3/password.txt',
+      '--mine', '--http', '--http.addr', '0.0.0.0',
+      '--networkid', '1515',
+      '--port', '30303',
+      '--http.port', '8545',
+      '--http.api', 'personal,db,eth,net,web3,txpool,miner,clique'
+]
+    ports:
+      - "30305:30305"
+      - "8547:8547"
+    volumes:
+      - ./validator3:/validator3
+        {
+        prometheus:
+  image: prom/prometheus
+  volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  ports:
+    - "9090:9090"
+grafana:
+  image: grafana/grafana
+  ports:
+    - "3000:3000"
+}
